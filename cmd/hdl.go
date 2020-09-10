@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"github.com/nj-designs/njd-cli/internal/cmds/hdl"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +26,25 @@ var hdlCmd = &cobra.Command{
 	Short: "HDL related commands",
 }
 
+// hdlSynthCmd represents the hld synth command
+var hdlSynthCmd = &cobra.Command{
+	Use:   "synth <project dir>",
+	Short: "Synthesise given HDL project",
+	Long: `Run synthesis step on given HDL project.
+
+A HDL project is a directory containing a project file 'hdl-project.json'
+
+Example: njd-cli hdl synth .
+
+Synthesise project in current directory
+
+`,
+
+	Run:  hdl.Run,
+	Args: cobra.ExactArgs(1),
+}
+
 func init() {
 	rootCmd.AddCommand(hdlCmd)
+	hdlCmd.AddCommand(hdlSynthCmd)
 }

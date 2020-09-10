@@ -1,19 +1,4 @@
-/*
-Copyright © 2020 Neil Johnson <nj.designs@protonmail.com>
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-package cmd
+package hdl
 
 import (
 	"encoding/json"
@@ -25,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/nj-designs/njd-cli/internal/njd"
 	"github.com/spf13/cobra"
 )
 
@@ -76,7 +62,8 @@ func discoverSrcFiles(project *hdlProject) ([]string, error) {
 	return filteredSrcFiles, nil
 }
 
-func runHDLSynth(cmd *cobra.Command, args []string) {
+// Run the HDL synth command
+func Run(cmd *cobra.Command, args []string) {
 	var err error
 	var absProjectDir string
 
@@ -91,7 +78,7 @@ func runHDLSynth(cmd *cobra.Command, args []string) {
 	}
 
 	// Does project file exist
-	if err = isFileReadable(projectFileName); err != nil {
+	if err = njd.IsFileReadable(projectFileName); err != nil {
 		log.Fatalf("Can't read project file in %s : %v", args[0], err)
 	}
 
@@ -108,28 +95,4 @@ func runHDLSynth(cmd *cobra.Command, args []string) {
 	}
 
 	fmt.Println(srcFiles)
-}
-
-func init() {
-	hdlCmd.AddCommand(hdlSynthCmd)
-
-	// hdlSynthCmd.Flags().BoolVarP(&recurse, "recurse", "r", false, "Clone & init sub modules")
-}
-
-// cloneCmd represents the clone command
-var hdlSynthCmd = &cobra.Command{
-	Use:   "synth <project dir>",
-	Short: "Synthesise given HDL project",
-	Long: `Run synthesis step on given HDL project.
-
-A HDL project is a directory containing a project file 'hdl-project.json'
-
-Example: njd-cli hdl synth .
-
-Synthesise project in current directory
-
-`,
-
-	Run:  runHDLSynth,
-	Args: cobra.ExactArgs(1),
 }
