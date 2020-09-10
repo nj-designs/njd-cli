@@ -1,4 +1,10 @@
 {
-    "top" : "top.v",
-    "modules" : ["modules/adder", "modules/vga", "modules/hdmi"]
+    "name": "demo",
+    "fpga": "ice40",
+    "top": "top",
+    "modules": [
+        "modules/adder",
+        "modules/vga",
+        "modules/hdmi"
+    ]
 }

@@ -46,5 +46,9 @@ Synthesise project in current directory
 
 func init() {
 	rootCmd.AddCommand(hdlCmd)
+
 	hdlCmd.AddCommand(hdlSynthCmd)
+
+	gitCloneCmd.Flags().BoolVarP(&recurse, "recurse", "r", false, "Clone & init sub modules")
+
 }
