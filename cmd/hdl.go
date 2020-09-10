@@ -19,12 +19,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// gitCmd represents the git command
-var gitCmd = &cobra.Command{
-	Use:   "git",
-	Short: "Git related commands",
+// hdlCmd represents the hdl command
+var hdlCmd = &cobra.Command{
+	Use:   "hdl",
+	Short: "HDL related commands",
 }
 
 func init() {
-	rootCmd.AddCommand(gitCmd)
+	rootCmd.AddCommand(hdlCmd)
 }

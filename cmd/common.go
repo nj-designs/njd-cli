@@ -16,15 +16,17 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+	"fmt"
+	"os"
 )
 
-// gitCmd represents the git command
-var gitCmd = &cobra.Command{
-	Use:   "git",
-	Short: "Git related commands",
-}
-
-func init() {
-	rootCmd.AddCommand(gitCmd)
+func isFileReadable(absFilePath string) error {
+	info, err := os.Stat(absFilePath)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("%s does not exist", absFilePath)
+	}
+	if info.IsDir() {
+		return fmt.Errorf("%s is a directory", absFilePath)
+	}
+	return nil
 }
