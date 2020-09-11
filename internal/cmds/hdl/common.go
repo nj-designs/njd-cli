@@ -1,5 +1,14 @@
 package hdl
 
+// SynthFlagsT cotains
+type SynthFlagsT struct {
+	Recurse bool
+	JSON    string
+}
+
+// SynthFlags cotains
+var SynthFlags SynthFlagsT
+
 // Expected name of HDL project file.
 // It's location is the root dir of the project
 const projectFileName string = "hdl-project.json"

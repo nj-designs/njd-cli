@@ -96,7 +96,13 @@ func buildYOSYSSynthCmdFile(project *hdlProject) (string, error) {
 
 	// Synth
 	fmt.Fprintf(&sb, "\n# Synth\n")
-	fmt.Fprintf(&sb, "synth_%s -top %s -json %s.json\n", project.FPGA, project.Top, project.Name)
+	fmt.Fprintf(&sb, "synth_%s -top %s", project.FPGA, project.Top)
+
+	//   Add JSON output
+	if len(SynthFlags.JSON) > 0 {
+		fmt.Fprintf(&sb, " -json %s", SynthFlags.JSON)
+	}
+	fmt.Fprintf(&sb, "\n")
 
 	return sb.String(), nil
 }

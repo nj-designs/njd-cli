@@ -7,6 +7,5 @@ read_verilog modules/vga/vga.v
 read_verilog modules/hdmi/hdmi.v
 
 # Synth
-synth_ice40 -top top -json demo.json
+synth_ice40 -top top
 
-show
