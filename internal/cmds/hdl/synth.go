@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -78,7 +79,7 @@ func sanityCheckProject(project *hdlProject) error {
 	return nil
 }
 
-// buildYOSYSSynthCmdFile returns a string containing YOSYS script to synthesise HDL project
+// buildYOSYSSynthCmdFile returns the filepath of a YOSYS script to synthesise HDL project
 func buildYOSYSSynthCmdFile(project *hdlProject) (string, error) {
 	var sb strings.Builder
 
@@ -104,13 +105,26 @@ func buildYOSYSSynthCmdFile(project *hdlProject) (string, error) {
 	}
 	fmt.Fprintf(&sb, "\n")
 
-	return sb.String(), nil
+	f, err := ioutil.TempFile("/tmp", "yosys-cmds-*.txt")
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	f.WriteString(sb.String())
+
+	return f.Name(), nil
 }
 
 // Run the HDL synth command
 func Run(cmd *cobra.Command, args []string) {
 	var err error
 	var absProjectDir string
+
+	_, err = exec.LookPath(yosysExe)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Get absolute project directory
 	if absProjectDir, err = filepath.Abs(args[0]); err != nil {
@@ -138,10 +152,41 @@ func Run(cmd *cobra.Command, args []string) {
 		log.Fatalf("Invalid project file : %v", err)
 	}
 
-	synthCmds, err := buildYOSYSSynthCmdFile(&project)
+	synthCmdFile, err := buildYOSYSSynthCmdFile(&project)
 	if err != nil {
 		log.Fatalf("Failed to build cmd file: %v", err)
 	}
 
-	fmt.Println(synthCmds)
+	// Build actual yosys command line
+	var yoySysArgs []string
+	// var sb strings.Builder
+	if SynthFlags.Verbose == false {
+		yoySysArgs = append(yoySysArgs, "-q")
+	}
+	yoySysArgs = append(yoySysArgs, fmt.Sprintf("-s %s", synthCmdFile))
+
+	// TODO(njohn) : Is there a better way to do this?
+	p := strings.Split(strings.Join(yoySysArgs, " "), " ")
+	yosysCmd := exec.Command(yosysExe, p...)
+
+	allOP, err := yosysCmd.CombinedOutput()
+	if len(allOP) > 0 {
+		fmt.Printf("%s", allOP)
+	}
+	if err != nil {
+		log.Fatalf("Synth failed : %v", err)
+	}
+
+	// fmt.Printf("\n\nSynth success!!!\n")
+	fmt.Print(`
+##############################################################
+#                     Synth success!!!                       #
+##############################################################
+
+
+`)
+
+	if len(SynthFlags.JSON) > 0 {
+		fmt.Printf("  json output: %s\n", SynthFlags.JSON)
+	}
 }

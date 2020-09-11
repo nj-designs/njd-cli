@@ -2,7 +2,7 @@ package hdl
 
 // SynthFlagsT cotains
 type SynthFlagsT struct {
-	Recurse bool
+	Verbose bool
 	JSON    string
 }
 
@@ -12,6 +12,8 @@ var SynthFlags SynthFlagsT
 // Expected name of HDL project file.
 // It's location is the root dir of the project
 const projectFileName string = "hdl-project.json"
+
+const yosysExe string = "yosys"
 
 // Supported FPGA
 var supportedFPGAList = []string{
