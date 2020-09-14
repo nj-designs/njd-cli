@@ -50,5 +50,6 @@ func init() {
 	// hdl synth sub command
 	hdlSynthCmd.Flags().StringVar(&hdl.SynthFlags.JSON, "json", "", "Save output as json file")
 	hdlSynthCmd.Flags().BoolVarP(&hdl.SynthFlags.Verbose, "verbose", "v", false, "Verbose output from YOSYS")
+	hdlSynthCmd.Flags().BoolVar(&hdl.SynthFlags.Show, "show", false, "Run 'show' command after synthesise")
 	hdlCmd.AddCommand(hdlSynthCmd)
 }

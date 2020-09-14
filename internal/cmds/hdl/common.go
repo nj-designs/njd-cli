@@ -3,6 +3,7 @@ package hdl
 // SynthFlagsT cotains
 type SynthFlagsT struct {
 	Verbose bool
+	Show    bool
 	JSON    string
 }
 
