@@ -41,13 +41,14 @@ type Map struct {
 		Firstgid string `xml:"firstgid,attr"`
 		Source   string `xml:"source,attr"`
 	} `xml:"tileset"`
-	Layer struct {
-		Text   string `xml:",chardata"`
-		ID     string `xml:"id,attr"`
-		Name   string `xml:"name,attr"`
-		Width  string `xml:"width,attr"`
-		Height string `xml:"height,attr"`
-		Data   struct {
+	Layer []struct {
+		Text    string `xml:",chardata"`
+		ID      string `xml:"id,attr"`
+		Name    string `xml:"name,attr"`
+		Width   string `xml:"width,attr"`
+		Height  string `xml:"height,attr"`
+		Visible string `xml:"visible,attr"`
+		Data    struct {
 			Text     string `xml:",chardata"`
 			Encoding string `xml:"encoding,attr"`
 		} `xml:"data"`
@@ -115,8 +116,8 @@ func Run(cmd *cobra.Command, args []string) {
 
 	fmt.Println(mapWidth, mapHeight)
 
-	if !checkValidTileMapEncoding(mapData.Layer.Data.Encoding) {
-		log.Fatalf("Unsupported tilemap encoding : %s", mapData.Layer.Data.Encoding)
+	if !checkValidTileMapEncoding(mapData.Layer[0].Data.Encoding) {
+		log.Fatalf("Unsupported tilemap encoding : %s", mapData.Layer[0].Data.Encoding)
 	}
 
 	// Now parse actually tileMapFile tile data (as csv)
@@ -128,7 +129,7 @@ func Run(cmd *cobra.Command, args []string) {
 	// fmt.Println(records)
 	//fmt.Println(mapData.Layer.Data.Text)
 
-	s := strings.Split(mapData.Layer.Data.Text, ",")
+	s := strings.Split(mapData.Layer[0].Data.Text, ",")
 
 	var b strings.Builder
 
